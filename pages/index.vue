@@ -14,7 +14,7 @@ export default {
   name: 'IndexPage',
   data() {
     return {
-      articles: [1, 2, 3, 4],
+      articles: [],
     }
   },
 }

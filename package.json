@@ -14,9 +14,11 @@
     "lintfix": "prettier --write --list-different . && npm run lint:js -- --fix && npm run lint:style -- --fix"
   },
   "dependencies": {
+    "babel-runtime": "^6.26.0",
     "core-js": "^3.32.1",
     "nuxt": "^2.17.1",
     "vue": "^2.7.10",
+    "vue-markdown": "^2.2.4",
     "vue-server-renderer": "^2.7.10",
     "vue-template-compiler": "^2.7.10"
   },
