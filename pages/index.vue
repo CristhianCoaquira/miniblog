@@ -20,8 +20,9 @@ export default {
     return {
       articles: [
         {
-          title: 'Mi Primer post',
           slug: 'mi-primer-post',
+          title: 'Mi Primer post',
+          author: 'Diana Martínez',
           date: new Date(1996, 8, 6),
         },
       ],
