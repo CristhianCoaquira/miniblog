@@ -1,7 +1,7 @@
 const Airtable = require('airtable')
 
 const db = new Airtable({
-  apiKey: process.env.ARITABLE_TOKEN,
+  apiKey: process.env.AIRTABLE_TOKEN,
 }).base(process.env.AIRTABLE_BASE_ID)
 
 const headers = {
