@@ -18,15 +18,21 @@ export default {
   name: 'IndexPage',
   data() {
     return {
-      articles: [
-        {
-          slug: 'mi-primer-post',
-          title: 'Mi Primer post',
-          author: 'Diana Martínez',
-          date: new Date(1996, 8, 6),
-        },
-      ],
+      articles: [],
     }
+  },
+  async mounted() {
+    const url = `http://localhost:9999/.netlify/functions/articles`
+    const res = await this.$http.get(url)
+    const { articles } = await res.json()
+    this.articles = articles.map((article) => {
+      return {
+        ...article.fields,
+        author: article.fields['author-name'][0],
+        date: new Date(article.fields.updated),
+        cover: article.fields.cover[0]?.thumbnails.large.url,
+      }
+    })
   },
 }
 </script>
