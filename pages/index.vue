@@ -22,8 +22,11 @@ export default {
     }
   },
   async mounted() {
-    const url = `http://localhost:9999/.netlify/functions/articles`
-    const res = await this.$http.get(url)
+    const url =
+      location.hostname === 'localhost'
+        ? 'http://localhost:9999'
+        : 'https://miniblog-dadas.netlify.app'
+    const res = await this.$http.get(`${url}/.netlify/functions/articles`)
     const { articles } = await res.json()
     this.articles = articles.map((article) => {
       return {

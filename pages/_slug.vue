@@ -12,28 +12,55 @@
         <figcaption>Portada - {{ post.title }}</figcaption>
       </figure>
       <VueMarkdown class="markdown">{{ post.content }}</VueMarkdown>
+      <div class="comments">
+        <h3 class="title">Comentarios</h3>
+        <p class="total-comments">
+          Hay {{ article['total-comments'] || 0 }} comentarios
+        </p>
+        <div class="comments-list">
+          <CommentItem
+            v-for="comment in comments"
+            :key="comment._id"
+            v-bind="comment"
+          />
+        </div>
+        <div class="add-comment">
+          <CommentInput @submitForm="createComment" />
+        </div>
+      </div>
     </article>
   </div>
 </template>
 
 <script>
 import VueMarkdown from 'vue-markdown'
+import CommentInput from '~/components/CommentInput.vue'
 
 export default {
   name: 'ArticlePage',
   components: {
     VueMarkdown,
+    CommentInput,
   },
-  async asyncData({ params, $http }) {
+  async asyncData({ params, $http, isDev }) {
     const { slug } = params
+    const url = isDev
+      ? 'http://localhost:9999'
+      : 'https://miniblog-dadas.netlify.app'
     const res = await $http.get(
-      `http://localhost:9999/.netlify/functions/article?slug=${slug}`
+      `${url}/.netlify/functions/article?slug=${slug}`
     )
-    const { article } = await res.json()
-    return { article }
+    const { article, comments } = await res.json()
+    return { article, comments }
   },
   data() {
     return {}
+  },
+  head() {
+    return {
+      title: this.post?.title,
+      meta: [{ name: 'description', content: this.post?.description || '' }],
+    }
   },
   computed: {
     post() {
@@ -48,11 +75,23 @@ export default {
       }
     },
   },
-  head() {
-    return {
-      title: this.post?.title,
-      meta: [{ name: 'description', content: this.post?.description || '' }],
-    }
+  methods: {
+    async createComment(comment) {
+      this.$nuxt.$loading.start()
+      const url =
+        location.hostname === 'localhost'
+          ? 'http://localhost:9999'
+          : 'https://miniblog-dadas.netlify.app'
+      await fetch(
+        `${url}/.netlify/functions/comment?article=${this.article._id}`,
+        {
+          method: 'post',
+          body: JSON.stringify(comment),
+        }
+      )
+      this.$nuxt.refresh()
+      this.$nuxt.$loading.finish()
+    },
   },
 }
 </script>
