@@ -17,18 +17,15 @@
 export default {
   name: 'IndexPage',
   data() {
-    return {
-      articles: [],
-    }
+    return {}
   },
-  async mounted() {
-    const url =
-      location.hostname === 'localhost'
-        ? 'http://localhost:9999'
-        : 'https://miniblog-dadas.netlify.app'
-    const res = await this.$http.get(`${url}/.netlify/functions/articles`)
-    const { articles } = await res.json()
-    this.articles = articles.map((article) => {
+  async asyncData({ isDev, $http }) {
+    const url = isDev
+      ? 'http://localhost:9999'
+      : 'https://miniblog-dadas.netlify.app'
+    const res = await $http.get(`${url}/.netlify/functions/articles`)
+    let { articles } = await res.json()
+    articles = articles.map((article) => {
       return {
         ...article.fields,
         author: article.fields['author-name'][0],
@@ -36,6 +33,9 @@ export default {
         cover: article.fields.cover[0]?.thumbnails.large.url,
       }
     })
+    return {
+      articles,
+    }
   },
 }
 </script>
