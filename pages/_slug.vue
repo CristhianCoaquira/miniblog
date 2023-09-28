@@ -75,6 +75,9 @@ export default {
       }
     },
   },
+  mounted() {
+    this.$nuxt.refresh()
+  },
   methods: {
     async createComment(comment) {
       this.$nuxt.$loading.start()
